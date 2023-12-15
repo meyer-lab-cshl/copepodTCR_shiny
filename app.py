@@ -19,41 +19,32 @@ from io import StringIO
 import zipfile
 from io import BytesIO
 
-from htmltools import HTML, div
-
 question_circle_fill = ui.HTML(
     '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-question-circle-fill mb-1" viewBox="0 0 16 16"><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.496 6.033h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286a.237.237 0 0 0 .241.247zm2.325 6.443c.61 0 1.029-.394 1.029-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94 0 .533.425.927 1.01.927z"/></svg>'
 )
 
-# Function to read markdown file
 def read_markdown_file(path):
     with open(path, 'r') as file:
         return file.read()
-
-
-def read_html_file(file_path):
-    with open(file_path, 'r', encoding='utf-8') as file:
-        return file.read()
-
 
 app_ui = ui.page_navbar(
     ui.nav(
             ui.output_image('logo', inline=True),
            ui.output_image('logo2', inline=True),
-           ui.markdown(read_markdown_file('www/copepodTCR.md')),
+           ui.markdown(read_markdown_file('/Users/hmeyer/myapp/www/copepodTCR.md')),
            ui.output_image('scheme1', inline=True),
-           ui.markdown(read_markdown_file('www/instructions.md')),
+           ui.markdown(read_markdown_file('/Users/hmeyer/myapp/www/instructions.md')),
            ),
     ui.nav(ui.output_image('Instructions', inline=True),
-           ui.markdown(read_markdown_file('www/instructions_2.md')),
+           ui.markdown(read_markdown_file('/Users/hmeyer/myapp/www/instructions_2.md')),
            ui.output_table('simulation_example'),
-           ui.markdown(read_markdown_file('www/instructions_3.md')),
+           ui.markdown(read_markdown_file('/Users/hmeyer/myapp/www/instructions_3.md')),
            ui.output_table('simulation_do_example'),
-           ui.markdown(read_markdown_file('www/instructions_4.md')),
+           ui.markdown(read_markdown_file('/Users/hmeyer/myapp/www/instructions_4.md')),
            ui.output_image('scheme2', inline=True),
-           ui.markdown(read_markdown_file('www/instructions_5.md')),
+           ui.markdown(read_markdown_file('/Users/hmeyer/myapp/www/instructions_5.md')),
            ui.output_image('scheme3', inline=True),
-           ui.markdown(read_markdown_file('www/instructions_6.md')),
+           ui.markdown(read_markdown_file('/Users/hmeyer/myapp/www/instructions_6.md')),
     ),
     ui.nav(ui.output_image('Balance_check', inline=True),
         ui.panel_title("Selection of parameters", "Balance check"),
@@ -92,9 +83,9 @@ app_ui = ui.page_navbar(
                 id="card_tooltip",),
             ui.input_text_area('text_peptides1', "", 'Peptides', resize = 'both'),
             ui.input_action_button('sample_data1', 'Load sample peptides',
-                                   class_="btn"),
+                                   class_="btn", style="color: #015396; background-color: #fff; border-color: #015396"),
             ui.input_action_button('get_overlap', 'Check',
-                                   class_="btn-primary"),
+                                   class_="btn-primary", style="color: #fff; background-color: #015396; border-color: #015396"),
             ui.output_text_verbatim('file_content'),
             ui.output_text_verbatim('strange_overlaps')
            ),
@@ -135,13 +126,13 @@ app_ui = ui.page_navbar(
             ui.input_text_area('text_peptides2', "", 'Peptides',
                                resize = 'both'),
             ui.input_action_button('sample_data', 'Load sample peptides',
-                                   class_="btn"),
+                                   class_="btn", style="color: #015396; background-color: #fff; border-color: #015396"),
             ui.input_text("letter", "Enter your email", placeholder="example@mail.ru"),
             ui.input_action_button('get_results', 'Get scheme and simulation results',
-                                   class_="btn-primary"),
-            ui.input_action_button("send", "Send results", class_="btn-success"),
+                                   class_="btn-primary", style="color: #fff; background-color: #015396; border-color: #015396"),
+            ui.input_action_button("send", "Send results", class_="btn-success", style="color: #015396; background-color: #fff; border-color: #015396"),
             ui.output_text('notification'),
-            ui.download_button('download1', 'Download results'),
+            ui.download_button('download1', 'Download results', class_="btn-success", style="color: #015396; background-color: #fff; border-color: #015396"),
             ui.output_ui('sim_text'),
             ui.output_plot('dropouts'),
             ui.output_data_frame('check_results'),
@@ -158,6 +149,7 @@ app_ui = ui.page_navbar(
                 placement="right",
                 id="card_tooltip",),
            ui.input_file('file5', '', multiple=False),
+           ui.output_image('scheme4', inline=False),
            x.ui.tooltip(ui.span("Number of rows ", question_circle_fill),
                 "Number of rows in the plate",
                 placement="right",
@@ -203,117 +195,123 @@ app_ui = ui.page_navbar(
                 placement="right",
                 id="card_tooltip",),
            ui.input_numeric("well_spacing", '', value = 4.5),
-           x.ui.tooltip(ui.span("Add well with coordinates 16-24 ", question_circle_fill),
+           x.ui.tooltip(ui.span("Add well with coordinates m-k ", question_circle_fill),
                 "To better orient tip pattern, you can add the hole with these coordinates, but it should be done only if there is no peptide in the plate in respective well ",
                 placement="right",
                 id="card_tooltip",),
            ui.input_switch('well24', '', value=True),
-           ui.input_action_button('get_stl', 'Generate STL files', class_="btn-primary"),
+           ui.input_action_button('get_stl', 'Generate STL files', class_="btn-primary",
+                                  style="color: #fff; background-color: #015396; border-color: #015396"),
            ui.output_text('stl_generation'),
            ui.input_text("stl_letter", "Enter your email", placeholder="example@mail.ru"),
-           ui.input_action_button("send_stl", "Send results", class_="btn-success"),
+           ui.input_action_button("send_stl", "Send results", class_="btn-success",
+                                  style="color: #015396; background-color: #fff; border-color: #015396"),
            ui.output_text('stl_notification'),
-           ui.download_button('download_stl', 'Download zip file with STL files')
+           ui.download_button('download_stl', 'Download zip file with STL files',
+                              style="color: #015396; background-color: #fff; border-color: #015396")
     ),
 
     ui.nav(ui.output_image('Interpretation', inline=True),
            ui.panel_title("Analyze results ", "Activated pools"),
-           x.ui.tooltip(ui.span("Choose a file with peptide addresses: ", question_circle_fill),
-                "Produced during pooling scheme step",
+           x.ui.tooltip(ui.span("Choose a file with simulation: ", question_circle_fill),
+                "Produced during pooling scheme step with or without drop-outs",
                 placement="right",
                 id="card_tooltip",),
            ui.input_file('file6', '', multiple=False),
-            x.ui.tooltip(ui.span("Number of pools ", question_circle_fill),
-                "Number of pools in the experiment",
-                placement="right",
-                id="card_tooltip",),
-            ui.input_numeric('n_pools3', '', value=0),
             x.ui.tooltip(ui.span("Experiment read out ", question_circle_fill),
                 "Numeric results of the experiment, in percentage of activated T cells, a table with columns 'Pool', 'Percentage'",
                 placement="right",
                 id="card_tooltip",),
             ui.input_file('file7', '', multiple=False),
-           x.ui.tooltip(ui.span("Peptide occurrence across pools ", question_circle_fill),
-                "Number of pools to which a single peptide would be added",
+            x.ui.tooltip(ui.span("Number of pools ", question_circle_fill),
+                "Number of pools in the experiment",
                 placement="right",
                 id="card_tooltip",),
-           ui.input_numeric('iters3', '', value = 4),
-           x.ui.tooltip(ui.span("Expected epitope length ", question_circle_fill),
-                "The length in amino acids of the epitope for simulation step",
-                placement="right",
-                id="card_tooltip",),
-           ui.input_slider('ep_length3', '', min = 8, max = 15, value=8),
-            ui.input_action_button('get_model', 'Analyze', class_="btn-primary"),
-            ui.output_text('activated_pools'),
-            ui.output_text('resulting_peptides2')
+            ui.input_numeric('n_pools3', '', value=0),
+            ui.input_action_button('get_model', 'Analyze', class_="btn-primary",
+                                   style="color: #fff; background-color: #015396; border-color: #015396"),
+            ui.output_plot('fitting'),
+            ui.output_text_verbatim('activated_pools'),
+            ui.output_text_verbatim('resulting_peptides2'),
+            ui.download_button('download_peptide_probs', 'Download results',  style="color: #015396; background-color: #fff; border-color: #015396"),
+            ui.input_text("letter2", "Enter your email:", placeholder="example@mail.ru"),
+            ui.input_action_button("send_probs", "Send results", class_="btn-success", style="color: #015396; background-color: #fff; border-color: #015396"),
+            ui.output_text('send_probs_note'),
+            
     )
 )
 
 def server(input: Inputs, output: Outputs, session: Session):
+
     @output
     @render.image
     def logo():
-        img: ImgData = {"src": "www/logo.svg", "width": "130px"}
+        img: ImgData = {"src": "/Users/hmeyer/myapp/www/logo.svg", "width": "130px"}
         return img
     @output
     @render.image
     def logo2():
-        img: ImgData = {"src": "www/logo.svg", "width": "400px"}
+        img: ImgData = {"src": "/Users/hmeyer/myapp/www/logo.svg", "width": "400px"}
         return img
     @output
     @render.image
     def Instructions():
-        img: ImgData = {"src": "www/Instructions.svg", "width": "130px"}
+        img: ImgData = {"src": "/Users/hmeyer/myapp/www/Instructions.svg", "width": "130px"}
         return img
     @output
     @render.image
     def scheme1():
-        img: ImgData = {"src": "www/scheme1.svg"}
+        img: ImgData = {"src": "/Users/hmeyer/myapp/www/scheme1.svg"}
         return img
     @output
     @render.table
     def simulation_example():
-        table = pd.read_csv('www/simulation_example.tsv', sep = "\t")
+        table = pd.read_csv('/Users/hmeyer/myapp/www/simulation_example.tsv', sep = "\t")
         return table
     @output
     @render.table
     def simulation_do_example():
-        table = pd.read_csv('www/simulation_do_example.tsv', sep = "\t")
+        table = pd.read_csv('/Users/hmeyer/myapp/www/simulation_do_example.tsv', sep = "\t")
         return table
     @output
     @render.image
     def scheme2():
-        img: ImgData = {"src": "www/scheme2.svg"}
+        img: ImgData = {"src": "/Users/hmeyer/myapp/www/scheme2.svg"}
         return img
     @output
     @render.image
     def scheme3():
-        img: ImgData = {"src": "www/scheme3.svg"}
+        img: ImgData = {"src": "/Users/hmeyer/myapp/www/scheme3.svg"}
         return img
     @output
     @render.image
     def Balance_check():
-        img: ImgData = {"src": "www/Balance_check.svg", "width": "130px"}
+        img: ImgData = {"src": "/Users/hmeyer/myapp/www/Balance_check.svg", "width": "130px"}
         return img
     @output
     @render.image
     def Overlap_check():
-        img: ImgData = {"src": "www/Overlap_check.svg", "width": "130px"}
+        img: ImgData = {"src": "/Users/hmeyer/myapp/www/Overlap_check.svg", "width": "130px"}
         return img
     @output
     @render.image
     def Pooling_scheme():
-        img: ImgData = {"src": "www/Pooling_scheme.svg", "width": "130px"}
+        img: ImgData = {"src": "/Users/hmeyer/myapp/www/Pooling_scheme.svg", "width": "130px"}
         return img
     @output
     @render.image
     def STL_files():
-        img: ImgData = {"src": "www/STL_files.svg", "width": "130px"}
+        img: ImgData = {"src": "/Users/hmeyer/myapp/www/STL_files.svg", "width": "130px"}
+        return img
+    @output
+    @render.image
+    def scheme4():
+        img: ImgData = {"src": "/Users/hmeyer/myapp/www/scheme2.svg"}
         return img
     @output
     @render.image
     def Interpretation():
-        img: ImgData = {"src": "www/Interpretation.svg", "width": "130px"}
+        img: ImgData = {"src": "/Users/hmeyer/myapp/www/Interpretation.svg", "width": "130px"}
         return img
     @output
     @render.ui
@@ -643,55 +641,7 @@ def server(input: Inputs, output: Outputs, session: Session):
     def download_stl():
         zip_buffer = cpp.zip_meshes(stl_files_react())
         yield zip_buffer.getvalue()
-
-    @reactive.Calc
-    def new_lst_react():
-        file_infos = input.file3()
-        if not file_infos:
-            return
-        for file_info in file_infos:
-            peptide_address_new=pd.read_csv(file_info["datapath"],sep="\t")
-        lst_new = list(peptide_address_new['Peptide'])
-        return lst_new
-    @reactive.Calc
-    def act_profile_react():
-        file_infos = input.file3()
-        if not file_infos:
-            return
-        for file_info in file_infos:
-            peptide_address_new=pd.read_csv(file_info["datapath"],sep="\t")
-        lst_new = new_lst_react()
-        peptide_address_dict = dict()
-        for p1 in lst_new:
-            peptide_address_dict[p1] = ast.literal_eval(peptide_address_new['Address'][peptide_address_new['Peptide'] == p1].values[0])
-        act_profile = cpp.epitope_pools_activation(peptide_address=peptide_address_dict, lst=lst_new, ep_length=input.ep_length3())
-        return act_profile
-    @output
-    @render.text
-    @reactive.event(input.get_peptides)
-    def resulting_peptides():
-        act_pools3 = input.act_pools().split(',')
-        act_pools3 = [int(i) for i in act_pools3]
-        lst3 = new_lst_react()
-        act_profile3 = act_profile_react()
-        try:
-            peptides, epitopes = cpp.peptide_search(lst3, act_profile3, act_pools3,
-                                                input.iters3(), input.n_pools3(),
-                                                input.drops3())
-            return_text_peptides = 'Peptides:\n'
-            return_text_epitopes = 'Epitopes: '
-            for p1 in peptides:
-                return_text_peptides = return_text_peptides + p1 + ', \n'
-            #for ep1 in epitopes:
-            #    return_text_epitopes = return_text_epitopes + ep1 + ', \n'
-
-            if return_text_peptides != 'Peptides:\n':
-                return return_text_peptides
-            else:
-                return 'Did not find any peptides'
-        except TypeError:
-            return 'Did not find any peptides, try \"with drop-outs\" regime'
-
+    
     @reactive.Calc
     @reactive.event(input.get_model)
     def model_fitting():
@@ -700,69 +650,119 @@ def server(input: Inputs, output: Outputs, session: Session):
             return
         for file_info in file_infos:
             exp_results=pd.read_csv(file_info["datapath"])
-        cells = list(exp_results['Percentage'])
-        inds = list(exp_results['Pool'])
-        probs = cpp.activation_model(cells, input.n_pools3(), inds)
-        return probs
+
+        with ui.Progress(min=1, max=2) as p:
+            p.set(message="Model fitting started.", detail="It will take some time...")
+            cells = list(exp_results['Percentage'])
+            #cells = cells/np.max(cells)
+            inds = list(exp_results['Pool'])
+            fig, probs = cpp.activation_model(cells, input.n_pools3(), inds)
+            progress = 2
+
+        return fig, probs
+    
+    @output
+    @render.plot
+    def fitting():
+        fig, _ = model_fitting()
+        return fig
+    
+    @reactive.Calc
+    def peptide_probs_react():
+        file_infos = input.file6()
+        if not file_infos:
+            return
+        for file_info in file_infos:
+            sim=pd.read_csv(file_info["datapath"], sep = "\t")
+        _, probs = model_fitting()
+        peptide_probs = cpp.peptide_probabilities(sim, probs)
+        return peptide_probs
 
     @output
     @render.text()
     def activated_pools():
         act_pools = []
-        probs = model_fitting()
+        _, probs = model_fitting()
         for i in range(len(probs)):
             if probs['assign'].iloc[i] < 0.5:
                 act_pools.append(i)
         text = 'Activated pools: '
         for item in act_pools:
             text = text + str(item) + ', '
-        return text
+        return text[:-2]
 
     @output
     @render.text()
     def resulting_peptides2():
-        act_pools = []
-        probs = model_fitting()
-        for i in range(len(probs)):
-            if probs['assign'].iloc[i] < 0.5:
-                act_pools.append(i)
-
         file_infos = input.file6()
         if not file_infos:
             return
         for file_info in file_infos:
-            peptide_address_new=pd.read_csv(file_info["datapath"],sep="\t")
-
-        lst_new = list(peptide_address_new['Peptide'])
-        peptide_address_dict = dict()
-        for p1 in lst_new:
-            peptide_address_dict[p1] = ast.literal_eval(peptide_address_new['Address'][peptide_address_new['Peptide'] == p1].values[0])
-        act_profile = cpp.epitope_pools_activation(peptide_address=peptide_address_dict, lst=lst_new, ep_length=input.ep_length3())
+            sim=pd.read_csv(file_info["datapath"], sep = "\t")
+        _, probs = model_fitting()
+        peptide_probs = peptide_probs_react()
+        note, most, possible = cpp.results_analysis(peptide_probs, probs, sim)
+        if len(most) != 0:
+            text = note + '\nResulting peptides: '
+            for p in most:
+                text = text + p + ', '
+            text = text[:-2]
+            text = text + '\n\nOther possible peptides: '
+            for p in possible:
+                text = text + p + ', '
+        elif len(possible) != 0 and len(most) == 0:
+            text = note
+            text = text + '\n\nPossible peptides: '
+            for p in possible:
+                text = text + p + ', '
+        else:
+            text = 'Nothing was found. '
+        return text[:-2]
     
-        try:
-            peptides, epitopes = cpp.peptide_search(lst_new, act_profile, act_pools,
-                                                input.iters3(), input.n_pools3(),
-                                                'without dropouts')
-            return_text_peptides = 'Peptides:\n'
-            return_text_epitopes = 'Epitopes: '
-            for p1 in peptides:
-                return_text_peptides = return_text_peptides + p1 + ', \n'
-            #for ep1 in epitopes:
-            #    return_text_epitopes = return_text_epitopes + ep1 + ', \n'
+    @session.download(filename='Peptide_probs.tsv')
+    def download_peptide_probs():
+        peptide_probs = peptide_probs_react()
+        peptide_probs = peptide_probs.sort_values(by = 'Probability', ascending=False)
+        yield peptide_probs.to_csv(sep = "\t", index=False)
+    
+    @output
+    @render.text()
+    @reactive.event(input.send_probs)
+    def send_probs_note():
+        file_infos = input.file6()
+        if not file_infos:
+            return
+        for file_info in file_infos:
+            sim=pd.read_csv(file_info["datapath"], sep = "\t")
+        _, probs = model_fitting()
+        peptide_probs = peptide_probs_react()
+        note, most, possible = cpp.results_analysis(peptide_probs, probs, sim)
+        if len(most) != 0:
+            text = note + '\nResulting peptides: '
+            for p in most:
+                text = text + p + ', '
+            text = text[:-2]
+            text = text + '\n\nOther possible peptides: '
+            for p in possible:
+                text = text + p + ', '
+        elif len(possible) != 0:
+            text = note
+            text = text + '\n\nPossible peptides: '
+            for p in possible:
+                text = text + p + ', '
+        else:
+            text = 'Nothing was found. '
+        peptide_probs = peptide_probs.sort_values(by = 'Probability', ascending=False)
 
-            if return_text_peptides != 'Peptides:\n':
-                return return_text_peptides
-            else:
-                return 'Did not find any peptides'
-        except TypeError:
-            return 'Did not find any peptides, try \"with drop-outs\" regime'
-
+        send_probs_via_email([input.letter2()], peptide_probs, text[:-2])
+        return 'Sent!'
+        
 
 app = App(app_ui, server, debug=True)
 
 def send_dataframe_via_email(receivers_list, dataframe):
     lines = []
-    with open('pass.txt') as f:
+    with open('/Users/hmeyer/myapp/pass.txt') as f:
         for line in f:
             lines.append(line.strip())
     password = lines[0]
@@ -776,7 +776,7 @@ def send_dataframe_via_email(receivers_list, dataframe):
         msg = MIMEMultipart()
         msg['From'] = login
         msg['To'] = ', '.join(receivers_list)
-        msg['Subject'] = 'Combinatorial Peptide Pooling'
+        msg['Subject'] = 'copepodTCR: combinatorial peptide pooling scheme'
 
         # Pools
         csv_buffer = StringIO()
@@ -812,7 +812,49 @@ def send_dataframe_via_email(receivers_list, dataframe):
         n_pools = dataframe[3][0]
         iters = dataframe[3][1]
         l = dataframe[3][2]
-        readme_content = f"n_pools = {n_pools}\npeptide occurence across pools (to how many pools one peptide is added) = {iters}\nnumber of peptides = {l}\nThank you for using combinatorial peptide pooling tool! Made by CSHL."
+        readme_content = f"n_pools = {n_pools}\npeptide occurence across pools (to how many pools one peptide is added) = {iters}\nnumber of peptides = {l}\nThank you for using copepodTCR! Made by CSHL."
+        part = MIMEBase('text', 'plain')
+        part.set_payload(readme_content)
+        encoders.encode_base64(part)
+        part.add_header('Content-Disposition', 'attachment; filename="README.txt"')
+        msg.attach(part)
+        
+        server.sendmail(
+            from_addr=login,
+            to_addrs=receivers_list,
+            msg=msg.as_string()
+        )
+
+def send_probs_via_email(receivers_list, dataframe, message):
+    lines = []
+    with open('/Users/hmeyer/myapp/pass.txt') as f:
+        for line in f:
+            lines.append(line.strip())
+    password = lines[0]
+    login = lines[1]
+    host_address = lines[2]
+    channel = int(lines[3])
+
+    with smtplib.SMTP(host=host_address, port=channel) as server:
+        server.login(login, password)
+        
+        msg = MIMEMultipart()
+        msg['From'] = login
+        msg['To'] = ', '.join(receivers_list)
+        msg['Subject'] = 'copepodTCR: results interpretation'
+
+        # Peptide probabilities
+        csv_buffer = StringIO()
+        dataframe.to_csv(csv_buffer, index=False, sep = "\t")
+        csv_str = csv_buffer.getvalue()
+        part = MIMEBase('text', 'tsv')
+        part.set_payload(csv_str)
+        encoders.encode_base64(part)
+        part.add_header('Content-Disposition', 'attachment; filename="Peptide_probabilities.tsv"')
+        msg.attach(part)
+
+        # README.txt
+        readme_content = f"{message}\nThank you for using copepodTCR! Made by CSHL."
         part = MIMEBase('text', 'plain')
         part.set_payload(readme_content)
         encoders.encode_base64(part)
@@ -840,7 +882,7 @@ def dataframes_to_zip(dataframes, filenames):
 def send_zip_via_email(receivers_list, zip_buffer):
     
     lines = []
-    with open('pass.txt') as f:
+    with open('/Users/hmeyer/myapp/pass.txt') as f:
         for line in f:
             lines.append(line.strip())
     password = lines[0]
@@ -855,7 +897,7 @@ def send_zip_via_email(receivers_list, zip_buffer):
         msg = MIMEMultipart()
         msg['From'] = login
         msg['To'] = ', '.join(receivers_list)
-        msg['Subject'] = 'Combinatorial Peptide Pooling: STL files'
+        msg['Subject'] = 'copepodTCR: STL files'
 
         # Zips
         attachment_part = MIMEBase("application", "zip")
@@ -870,4 +912,3 @@ def send_zip_via_email(receivers_list, zip_buffer):
             to_addrs=receivers_list,
             msg=msg.as_string()
         )
-
