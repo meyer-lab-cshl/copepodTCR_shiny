@@ -31,20 +31,20 @@ app_ui = ui.page_navbar(
     ui.nav(
             ui.output_image('logo', inline=True),
            ui.output_image('logo2', inline=True),
-           ui.markdown(read_markdown_file('/Users/hmeyer/myapp/www/copepodTCR.md')),
+           ui.markdown(read_markdown_file('www/copepodTCR.md')),
            ui.output_image('scheme1', inline=True),
-           ui.markdown(read_markdown_file('/Users/hmeyer/myapp/www/instructions.md')),
+           ui.markdown(read_markdown_file('www/instructions.md')),
            ),
     ui.nav(ui.output_image('Instructions', inline=True),
-           ui.markdown(read_markdown_file('/Users/hmeyer/myapp/www/instructions_2.md')),
+           ui.markdown(read_markdown_file('www/instructions_2.md')),
            ui.output_table('simulation_example'),
-           ui.markdown(read_markdown_file('/Users/hmeyer/myapp/www/instructions_3.md')),
+           ui.markdown(read_markdown_file('www/instructions_3.md')),
            ui.output_table('simulation_do_example'),
-           ui.markdown(read_markdown_file('/Users/hmeyer/myapp/www/instructions_4.md')),
+           ui.markdown(read_markdown_file('www/instructions_4.md')),
            ui.output_image('scheme2', inline=True),
-           ui.markdown(read_markdown_file('/Users/hmeyer/myapp/www/instructions_5.md')),
+           ui.markdown(read_markdown_file('www/instructions_5.md')),
            ui.output_image('scheme3', inline=True),
-           ui.markdown(read_markdown_file('/Users/hmeyer/myapp/www/instructions_6.md')),
+           ui.markdown(read_markdown_file('www/instructions_6.md')),
     ),
     ui.nav(ui.output_image('Balance_check', inline=True),
         ui.panel_title("Selection of parameters", "Balance check"),
@@ -246,72 +246,72 @@ def server(input: Inputs, output: Outputs, session: Session):
     @output
     @render.image
     def logo():
-        img: ImgData = {"src": "/Users/hmeyer/myapp/www/logo.svg", "width": "130px"}
+        img: ImgData = {"src": "www/logo.svg", "width": "130px"}
         return img
     @output
     @render.image
     def logo2():
-        img: ImgData = {"src": "/Users/hmeyer/myapp/www/logo.svg", "width": "400px"}
+        img: ImgData = {"src": "www/logo.svg", "width": "400px"}
         return img
     @output
     @render.image
     def Instructions():
-        img: ImgData = {"src": "/Users/hmeyer/myapp/www/Instructions.svg", "width": "130px"}
+        img: ImgData = {"src": "www/Instructions.svg", "width": "130px"}
         return img
     @output
     @render.image
     def scheme1():
-        img: ImgData = {"src": "/Users/hmeyer/myapp/www/scheme1.svg"}
+        img: ImgData = {"src": "www/scheme1.svg"}
         return img
     @output
     @render.table
     def simulation_example():
-        table = pd.read_csv('/Users/hmeyer/myapp/www/simulation_example.tsv', sep = "\t")
+        table = pd.read_csv('www/simulation_example.tsv', sep = "\t")
         return table
     @output
     @render.table
     def simulation_do_example():
-        table = pd.read_csv('/Users/hmeyer/myapp/www/simulation_do_example.tsv', sep = "\t")
+        table = pd.read_csv('www/simulation_do_example.tsv', sep = "\t")
         return table
     @output
     @render.image
     def scheme2():
-        img: ImgData = {"src": "/Users/hmeyer/myapp/www/scheme2.svg"}
+        img: ImgData = {"src": "www/scheme2.svg"}
         return img
     @output
     @render.image
     def scheme3():
-        img: ImgData = {"src": "/Users/hmeyer/myapp/www/scheme3.svg"}
+        img: ImgData = {"src": "www/scheme3.svg"}
         return img
     @output
     @render.image
     def Balance_check():
-        img: ImgData = {"src": "/Users/hmeyer/myapp/www/Balance_check.svg", "width": "130px"}
+        img: ImgData = {"src": "www/Balance_check.svg", "width": "130px"}
         return img
     @output
     @render.image
     def Overlap_check():
-        img: ImgData = {"src": "/Users/hmeyer/myapp/www/Overlap_check.svg", "width": "130px"}
+        img: ImgData = {"src": "www/Overlap_check.svg", "width": "130px"}
         return img
     @output
     @render.image
     def Pooling_scheme():
-        img: ImgData = {"src": "/Users/hmeyer/myapp/www/Pooling_scheme.svg", "width": "130px"}
+        img: ImgData = {"src": "www/Pooling_scheme.svg", "width": "130px"}
         return img
     @output
     @render.image
     def STL_files():
-        img: ImgData = {"src": "/Users/hmeyer/myapp/www/STL_files.svg", "width": "130px"}
+        img: ImgData = {"src": "www/STL_files.svg", "width": "130px"}
         return img
     @output
     @render.image
     def scheme4():
-        img: ImgData = {"src": "/Users/hmeyer/myapp/www/scheme2.svg"}
+        img: ImgData = {"src": "www/scheme2.svg"}
         return img
     @output
     @render.image
     def Interpretation():
-        img: ImgData = {"src": "/Users/hmeyer/myapp/www/Interpretation.svg", "width": "130px"}
+        img: ImgData = {"src": "www/Interpretation.svg", "width": "130px"}
         return img
     @output
     @render.ui
@@ -779,7 +779,7 @@ app = App(app_ui, server, debug=True)
 
 def send_dataframe_via_email(receivers_list, dataframe):
     lines = []
-    with open('/Users/hmeyer/myapp/pass.txt') as f:
+    with open('pass.txt') as f:
         for line in f:
             lines.append(line.strip())
     password = lines[0]
@@ -844,7 +844,7 @@ def send_dataframe_via_email(receivers_list, dataframe):
 
 def send_probs_via_email(receivers_list, dataframe, message):
     lines = []
-    with open('/Users/hmeyer/myapp/pass.txt') as f:
+    with open('pass.txt') as f:
         for line in f:
             lines.append(line.strip())
     password = lines[0]
@@ -899,7 +899,7 @@ def dataframes_to_zip(dataframes, filenames):
 def send_zip_via_email(receivers_list, zip_buffer):
     
     lines = []
-    with open('/Users/hmeyer/myapp/pass.txt') as f:
+    with open('pass.txt') as f:
         for line in f:
             lines.append(line.strip())
     password = lines[0]
