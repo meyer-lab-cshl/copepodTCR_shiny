@@ -31,20 +31,20 @@ app_ui = ui.page_navbar(
     ui.nav(
             ui.output_image('logo', inline=True),
            ui.output_image('logo2', inline=True),
-           ui.markdown(read_markdown_file('www/copepodTCR.md')),
+           ui.markdown(read_markdown_file('/Users/hmeyer/myapp/www/copepodTCR.md')),
            ui.output_image('scheme1', inline=True),
-           ui.markdown(read_markdown_file('www/instructions.md')),
+           ui.markdown(read_markdown_file('/Users/hmeyer/myapp/www/instructions.md')),
            ),
     ui.nav(ui.output_image('Instructions', inline=True),
-           ui.markdown(read_markdown_file('www/instructions_2.md')),
+           ui.markdown(read_markdown_file('/Users/hmeyer/myapp/www/instructions_2.md')),
            ui.output_table('simulation_example'),
-           ui.markdown(read_markdown_file('www/instructions_3.md')),
+           ui.markdown(read_markdown_file('/Users/hmeyer/myapp/www/instructions_3.md')),
            ui.output_table('simulation_do_example'),
-           ui.markdown(read_markdown_file('www/instructions_4.md')),
+           ui.markdown(read_markdown_file('/Users/hmeyer/myapp/www/instructions_4.md')),
            ui.output_image('scheme2', inline=True),
-           ui.markdown(read_markdown_file('www/instructions_5.md')),
+           ui.markdown(read_markdown_file('/Users/hmeyer/myapp/www/instructions_5.md')),
            ui.output_image('scheme3', inline=True),
-           ui.markdown(read_markdown_file('www/instructions_6.md')),
+           ui.markdown(read_markdown_file('/Users/hmeyer/myapp/www/instructions_6.md')),
     ),
     ui.nav(ui.output_image('Balance_check', inline=True),
         ui.panel_title("Selection of parameters", "Balance check"),
@@ -246,72 +246,72 @@ def server(input: Inputs, output: Outputs, session: Session):
     @output
     @render.image
     def logo():
-        img: ImgData = {"src": "www/logo.svg", "width": "130px"}
+        img: ImgData = {"src": "/Users/hmeyer/myapp/www/logo.svg", "width": "130px"}
         return img
     @output
     @render.image
     def logo2():
-        img: ImgData = {"src": "www/logo.svg", "width": "400px"}
+        img: ImgData = {"src": "/Users/hmeyer/myapp/www/logo.svg", "width": "400px"}
         return img
     @output
     @render.image
     def Instructions():
-        img: ImgData = {"src": "www/Instructions.svg", "width": "130px"}
+        img: ImgData = {"src": "/Users/hmeyer/myapp/www/Instructions.svg", "width": "130px"}
         return img
     @output
     @render.image
     def scheme1():
-        img: ImgData = {"src": "www/scheme1.svg"}
+        img: ImgData = {"src": "/Users/hmeyer/myapp/www/scheme1.svg"}
         return img
     @output
     @render.table
     def simulation_example():
-        table = pd.read_csv('www/simulation_example.tsv', sep = "\t")
+        table = pd.read_csv('/Users/hmeyer/myapp/www/simulation_example.tsv', sep = "\t")
         return table
     @output
     @render.table
     def simulation_do_example():
-        table = pd.read_csv('www/simulation_do_example.tsv', sep = "\t")
+        table = pd.read_csv('/Users/hmeyer/myapp/www/simulation_do_example.tsv', sep = "\t")
         return table
     @output
     @render.image
     def scheme2():
-        img: ImgData = {"src": "www/scheme2.svg"}
+        img: ImgData = {"src": "/Users/hmeyer/myapp/www/scheme2.svg"}
         return img
     @output
     @render.image
     def scheme3():
-        img: ImgData = {"src": "www/scheme3.svg"}
+        img: ImgData = {"src": "/Users/hmeyer/myapp/www/scheme3.svg"}
         return img
     @output
     @render.image
     def Balance_check():
-        img: ImgData = {"src": "www/Balance_check.svg", "width": "130px"}
+        img: ImgData = {"src": "/Users/hmeyer/myapp/www/Balance_check.svg", "width": "130px"}
         return img
     @output
     @render.image
     def Overlap_check():
-        img: ImgData = {"src": "www/Overlap_check.svg", "width": "130px"}
+        img: ImgData = {"src": "/Users/hmeyer/myapp/www/Overlap_check.svg", "width": "130px"}
         return img
     @output
     @render.image
     def Pooling_scheme():
-        img: ImgData = {"src": "www/Pooling_scheme.svg", "width": "130px"}
+        img: ImgData = {"src": "/Users/hmeyer/myapp/www/Pooling_scheme.svg", "width": "130px"}
         return img
     @output
     @render.image
     def STL_files():
-        img: ImgData = {"src": "www/STL_files.svg", "width": "130px"}
+        img: ImgData = {"src": "/Users/hmeyer/myapp/www/STL_files.svg", "width": "130px"}
         return img
     @output
     @render.image
     def scheme4():
-        img: ImgData = {"src": "www/scheme2.svg"}
+        img: ImgData = {"src": "/Users/hmeyer/myapp/www/scheme2.svg"}
         return img
     @output
     @render.image
     def Interpretation():
-        img: ImgData = {"src": "www/Interpretation.svg", "width": "130px"}
+        img: ImgData = {"src": "/Users/hmeyer/myapp/www/Interpretation.svg", "width": "130px"}
         return img
     @output
     @render.ui
@@ -438,73 +438,73 @@ def server(input: Inputs, output: Outputs, session: Session):
             for file_info in file_infos:
                 input_df=pd.read_csv(file_info["datapath"], header = None)
             lst = list(input_df[0])
-        b, lines = cpp.address_rearrangement_AU(n_pools=input.n_pools(),
+        if type(input.n_pools()) == int:
+            if comb(input.n_pools(), input.iters()) >= len(lst):
+                b, lines = cpp.address_rearrangement_AU(n_pools=input.n_pools(),
                                                 iters=input.iters(),
                                                 len_lst=len(lst))
-        pools, peptide_address = cpp.pooling(lst=lst, addresses=lines, n_pools=input.n_pools())
+                pools, peptide_address = cpp.pooling(lst=lst, addresses=lines, n_pools=input.n_pools())
 
-        act_profile = cpp.epitope_pools_activation(peptide_address, lst, input.ep_length())
+                act_profile = cpp.epitope_pools_activation(peptide_address, lst, input.ep_length())
     
-        check_results = pd.DataFrame(columns = ['Peptide', 'Address', 'Epitope', 'Act Pools',
+                check_results = pd.DataFrame(columns = ['Peptide', 'Address', 'Epitope', 'Act Pools',
                                         '# of pools', '# of epitopes', '# of peptides', 'Remained', '# of lost',
                                            'Right peptide', 'Right epitope'])
 
-        with ui.Progress(min=1, max=len(lst)) as p:
-            p.set(message="Simulating...", detail="This may take a while...")
+                with ui.Progress(min=1, max=len(lst)) as p:
+                    p.set(message="Simulating...", detail="This may take a while...")
 
-            for peptide in lst:
-                p.set(lst.index(peptide), message="Computing")
-                for i in range(len(peptide)):
-                    ep = peptide[i:i+input.ep_length()]
-                    if len(ep) == input.ep_length():
-                        act = cpp.pools_activation(pools, ep)
-                        if input.drops() == 'without dropouts':
-                            peps, eps = cpp.peptide_search(lst=lst, act_profile=act_profile,
-                                           act_pools = act,
-                                           iters = input.iters(), n_pools = input.n_pools(),
-                                           regime = 'without dropouts')
-                            right_pep = str(peptide in peps)
-                            right_ep = str(ep in eps)
-                            row = {'Peptide':peptide, 'Address':str(peptide_address[peptide]), 'Epitope':ep,
-                           'Act Pools':str(sorted(list(act))), '# of pools':len(act),
-                           '# of epitopes':len(eps), '# of peptides':len(peps), 'Remained':'-', '# of lost':0,
-                           'Right peptide':right_pep, 'Right epitope':right_ep}
-                            check_results = pd.concat([check_results, pd.DataFrame(row, index = [0])])
-                        elif input.drops() == 'with dropouts':
-                            l = len(act)
-                            for i in range(1, l+1):
-                                lost = len(act) - i
-                                lost_combs = list(combinations(act, i))
-                                for lost_comb in lost_combs:
+                    for peptide in lst:
+                        p.set(lst.index(peptide), message="Computing")
+                        for i in range(len(peptide)):
+                            ep = peptide[i:i+input.ep_length()]
+                            if len(ep) == input.ep_length():
+                                act = cpp.pools_activation(pools, ep)
+                                if input.drops() == 'without dropouts':
                                     peps, eps = cpp.peptide_search(lst=lst, act_profile=act_profile,
-                                           act_pools = list(lost_comb),
-                                           iters = input.iters(), n_pools = input.n_pools(),
-                                           regime = 'with dropouts')
+                                                act_pools = act,
+                                                iters = input.iters(), n_pools = input.n_pools(),
+                                                regime = 'without dropouts')
                                     right_pep = str(peptide in peps)
                                     right_ep = str(ep in eps)
-                
                                     row = {'Peptide':peptide, 'Address':str(peptide_address[peptide]), 'Epitope':ep,
-                                   'Act Pools':str(sorted(list(act))), '# of pools':len(act),
-                                   '# of epitopes':len(eps), '# of peptides':len(peps),
-                                   'Remained':str(list(lost_comb)), '# of lost':lost,
-                                   'Right peptide':right_pep, 'Right epitope':right_ep}
+                                'Act Pools':str(sorted(list(act))), '# of pools':len(act),
+                                '# of epitopes':len(eps), '# of peptides':len(peps), 'Remained':'-', '# of lost':0,
+                                'Right peptide':right_pep, 'Right epitope':right_ep}
                                     check_results = pd.concat([check_results, pd.DataFrame(row, index = [0])])
-
-            
-        #check_results = cpp.run_experiment(lst=lst, peptide_address=peptide_address,
-        #                                   ep_length=input.ep_length(),
-        #                                   pools=pools, iters=input.iters(), n_pools=input.n_pools(),
-        #                                   regime=input.drops())
+                                elif input.drops() == 'with dropouts':
+                                    l = len(act)
+                                    for i in range(1, l+1):
+                                        lost = len(act) - i
+                                        lost_combs = list(combinations(act, i))
+                                        for lost_comb in lost_combs:
+                                            peps, eps = cpp.peptide_search(lst=lst, act_profile=act_profile,
+                                                act_pools = list(lost_comb),
+                                                iters = input.iters(), n_pools = input.n_pools(),
+                                                regime = 'with dropouts')
+                                            right_pep = str(peptide in peps)
+                                            right_ep = str(ep in eps)
+                        
+                                            row = {'Peptide':peptide, 'Address':str(peptide_address[peptide]), 'Epitope':ep,
+                                        'Act Pools':str(sorted(list(act))), '# of pools':len(act),
+                                        '# of epitopes':len(eps), '# of peptides':len(peps),
+                                        'Remained':str(list(lost_comb)), '# of lost':lost,
+                                        'Right peptide':right_pep, 'Right epitope':right_ep}
+                                            check_results = pd.concat([check_results, pd.DataFrame(row, index = [0])])
         
-        if len(check_results[check_results['# of peptides'] > 2]) > 0 and input.drops() == 'without dropouts':
-            m = ui.modal(
-            "Your peptide set has different overlap lengths, it might hampen result interpretation.",
-            title="Warning",
-            easy_close=True,
-            footer=None)
-            ui.modal_show(m)
+                if len(check_results[check_results['# of peptides'] > 2]) > 0 and input.drops() == 'without dropouts':
+                    m = ui.modal(
+                    "Your peptide set has different overlap lengths, it might hampen result interpretation.",
+                    title="Warning",
+                    easy_close=True,
+                    footer=None)
+                    ui.modal_show(m)
         
-        return [b, pools, peptide_address, check_results, lst]
+                return [b, pools, peptide_address, check_results, lst]
+            else:
+                return 'Impossible set of parameters'
+        else:
+            return 'Impossible set of parameters'
     
     @output
     @render.text()
@@ -531,54 +531,69 @@ def server(input: Inputs, output: Outputs, session: Session):
     @render.ui
     @reactive.event(input.get_results)
     def sim_text():
-        res = x.ui.tooltip(ui.span("Simulation results ", question_circle_fill),
+        if pooling_scheme_react() == 'Impossible set of parameters':
+            return 'Impossible set of parameters'
+        else:
+            res = x.ui.tooltip(ui.span("Simulation results ", question_circle_fill),
                 "Results of the experiment for any possible epitope of provided length",
                 placement="right",
                 id="card_tooltip",)
-        return res
-    
+            return res
+
     @output
     @render.plot
     @reactive.event(input.get_results)
     def dropouts():
-        check_results = pooling_scheme_react()[3]
+        if pooling_scheme_react() != 'Impossible set of parameters':
+            check_results = pooling_scheme_react()[3]
         
-        if input.drops() == 'with dropouts':
-            sn.lineplot(data = check_results, x = '# of lost', y = '# of peptides', hue = 'Right peptide',
+            if input.drops() == 'with dropouts':
+                sn.lineplot(data = check_results, x = '# of lost', y = '# of peptides', hue = 'Right peptide',
                         legend = True)
-            fig1 = plt.gca()
-            fig1.xaxis.set_major_locator(plt.MaxNLocator(integer=True))
-        else:
-            sn.histplot(check_results, x="# of peptides", hue="Right peptide", legend = True, binwidth=0.1)
-            fig1 = plt.gca()
-            fig1.xaxis.set_major_locator(plt.MaxNLocator(integer=True))
-        return fig1
+                fig1 = plt.gca()
+                fig1.xaxis.set_major_locator(plt.MaxNLocator(integer=True))
+                plt.ylabel('Number of recovered peptides')
+                plt.xlabel('Number of erroneous non-activated pools')
+                plt.title('Simulation results')
+                plt.legend()
+            else:
+                sn.histplot(check_results, x="# of peptides", hue="Right peptide", legend = True, binwidth=0.1, color = '#015396')
+                fig1 = plt.gca()
+                fig1.xaxis.set_major_locator(plt.MaxNLocator(integer=True))
+                plt.ylabel('Number of epitopes')
+                plt.xlabel('Number of peptides with shared epitope')
+                plt.title('Simulation results')
+                plt.legend()
+
+            return fig1
 
     @output
     @render.data_frame
     @reactive.event(input.get_results)
     def check_results():
-        table = pooling_scheme_react()[3]
-        fr_table = int(np.floor(len(table)*0.03))
-        return table.sample(frac = 1).head(fr_table)
+        if pooling_scheme_react() != 'Impossible set of parameters':
+            table = pooling_scheme_react()[3]
+            fr_table = int(np.floor(len(table)*0.03))
+            return table.sample(frac = 1).head(fr_table)
     @session.download(filename='Results.zip')
     def download1():
-        pools = pooling_scheme_react()[1]
-        pools_df = dict()
-        for key in pools:
-            pools_df[key] = ';'.join(pools[key])
-        pools_df = pd.DataFrame.from_dict(pools_df, orient = 'index')
-        pools_df = pools_df.reset_index()
-        pools_df.columns = ['Pool', 'Peptides']
+        if pooling_scheme_react() != 'Impossible set of parameters':
+            pools = pooling_scheme_react()[1]
+            pools_df = dict()
+            for key in pools:
+                pools_df[key] = ';'.join(pools[key])
+            pools_df = pd.DataFrame.from_dict(pools_df, orient = 'index')
+            pools_df = pools_df.reset_index()
+            pools_df.columns = ['Pool', 'Peptides']
 
-        peptide_address = pooling_scheme_react()[2]
-        peptide_address_df = pd.DataFrame(list(peptide_address.items()), columns=['Peptide', 'Address'])
+            peptide_address = pooling_scheme_react()[2]
+            peptide_address_df = pd.DataFrame(list(peptide_address.items()), columns=['Peptide', 'Address'])
 
-        table = pooling_scheme_react()[3]
+            table = pooling_scheme_react()[3]
 
-        zip_buffer = dataframes_to_zip([pools_df, peptide_address_df, table],
-                          ['pools.tsv', 'peptide_addresses.tsv', 'simulation.tsv'])
-        yield zip_buffer.getvalue()
+            zip_buffer = dataframes_to_zip([pools_df, peptide_address_df, table],
+                            ['pools.tsv', 'peptide_addresses.tsv', 'simulation.tsv'])
+            yield zip_buffer.getvalue()
     
     @reactive.Calc
     @reactive.event(input.get_stl)
@@ -657,7 +672,9 @@ def server(input: Inputs, output: Outputs, session: Session):
             #cells = cells/np.max(cells)
             inds = list(exp_results['Pool'])
             fig, probs = cpp.activation_model(cells, input.n_pools3(), inds)
-            progress = 2
+            plt.xlabel('Activation signal')
+            plt.title('Model')
+            plt.legend()
 
         return fig, probs
     
@@ -762,7 +779,7 @@ app = App(app_ui, server, debug=True)
 
 def send_dataframe_via_email(receivers_list, dataframe):
     lines = []
-    with open('pass.txt') as f:
+    with open('/Users/hmeyer/myapp/pass.txt') as f:
         for line in f:
             lines.append(line.strip())
     password = lines[0]
@@ -827,7 +844,7 @@ def send_dataframe_via_email(receivers_list, dataframe):
 
 def send_probs_via_email(receivers_list, dataframe, message):
     lines = []
-    with open('pass.txt') as f:
+    with open('/Users/hmeyer/myapp/pass.txt') as f:
         for line in f:
             lines.append(line.strip())
     password = lines[0]
@@ -882,7 +899,7 @@ def dataframes_to_zip(dataframes, filenames):
 def send_zip_via_email(receivers_list, zip_buffer):
     
     lines = []
-    with open('pass.txt') as f:
+    with open('/Users/hmeyer/myapp/pass.txt') as f:
         for line in f:
             lines.append(line.strip())
     password = lines[0]
