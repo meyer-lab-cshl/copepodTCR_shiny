@@ -8,7 +8,7 @@
 - Y offset — margin along the Y axis for the A1 well, in mm
 - well spacing — distance between wells, in mm
 
-To better orient tip pattern, the user can add the last hole (with coordinates m-k). It should be used only in absence of peptide in the corresponding well.
+To better orient tip pattern, the user can add the last hole (with coordinates m-k). It should be used only in absence of peptide in the corresponding well. Also, the user can choose to add marks indicating pool index to the masks.
 
 ### <span style="color:#015396">Activated pools</span>
 

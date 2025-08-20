@@ -1,4 +1,3 @@
-D2y7cnSF@!HmT4VJ
-cpp@cshl.edu
-smtp.cshl.edu
-25
+cpp
+smtp2tlsnew.cshl.edu
+587

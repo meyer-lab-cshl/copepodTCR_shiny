@@ -1,5 +1,3 @@
 To enter the results of the experiment in the model, the user needs to make a CSV table with two columns: **Pool** and **Percentage**. Experiment can be conducted with replicas, then all replicas of one pool should have the same name in **Pool** column. **Percentage** is a percentage of activated T cells in a given pool (in case of microscopy, the user can divide number of activated T cells per well by total number of activated T cells in the experiment).
 
-Then the user needs to enter the table with peptide addresses (produced during Pooling scheme step), experiment read out (CSV table), number of pools, peptide occurrence used in the experiment, and expected epitope length.
-
-After fitting the data to the model (it might take some time), copepodTCR returns list of activated pools and peptides responsible for their activation.
+Example of the read out input file:
