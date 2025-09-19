@@ -1,4 +1,4 @@
-name: shiny1.4_copepodTCR
+name: shiny1.4_copepodTCR 
 channels:
   - conda-forge
 dependencies:
@@ -8,5 +8,6 @@ dependencies:
   - pip:
     - biopython==1.85
     - manifold3d==3.2.1
+    - copepodTCR
 
 prefix: "/Users/kovaleva/miniforge3/envs/shiny1.4_copepodTCR"
