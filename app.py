@@ -981,10 +981,13 @@ def server(input: Inputs, output: Outputs, session: Session):
 
         check_results_df = pooling_scheme_react()[3]
 
-        send_dataframe_via_email([input.letter_po()], [pools_df, peptide_address_df, check_results_df,
-                                                    [input.n_pools_po(), input.iters_po(), len(pooling_scheme_react()[4])]])
+        n_pools = len(pools_df)
+        iters = input.iters_po()
+        n_peptides = len(pooling_scheme_react()[4])
+
+        send_dataframe_via_email([input.letter_po()], [pools_df, peptide_address_df, check_results_df, [n_pools, iters, n_peptides]])
         return 'Sent!'
-    
+
     ## resulting balance (plot)
     @output
     @render.plot
@@ -1315,7 +1318,20 @@ def server(input: Inputs, output: Outputs, session: Session):
         res = peptide_probs_react()
         if res is None or len(res) == 0:
             return go.Figure()
-        return cpp.hover_bubbleplot(res)
+        
+        # Defensive copy and cleaning
+        df = res.copy()
+        num_cols = df.select_dtypes(include=["number"]).columns
+
+        # Replace infinities with NaN, then drop any rows that have NaNs in numeric columns
+        df[num_cols] = df[num_cols].replace([np.inf, -np.inf], np.nan)
+        df = df.dropna(subset=num_cols, how="any")
+
+        # Optional: if everything was dropped, return empty figure instead of exploding
+        if df.empty:
+            return go.Figure()
+
+        return cpp.hover_bubbleplot(df)
     
     ## download peptide probabilities
     @session.download(filename='Peptide_probs.tsv')
@@ -1401,7 +1417,7 @@ def send_zip_via_email(receivers_list, zip_buffer):
         server.ehlo()
         server.starttls()
         server.ehlo()
-        server.login(login, "")
+        #server.login(login, "")
 
         msg = MIMEMultipart()
         msg["From"] = login
@@ -1441,7 +1457,7 @@ def send_dataframe_via_email(receivers_list, dataframe):
         server.ehlo()
         server.starttls()
         server.ehlo()
-        server.login(login, "")
+        #server.login(login, "")
 
         msg = MIMEMultipart()
         msg["From"] = login
@@ -1515,7 +1531,7 @@ def send_probs_via_email(receivers_list, dataframe, message):
         server.ehlo()
         server.starttls()
         server.ehlo()
-        server.login(login, "")
+        #server.login(login, "")
 
         msg = MIMEMultipart()
         msg["From"] = login
