@@ -101,7 +101,7 @@ app_ui = ui.page_navbar(
 
         ## resulting negative share (text)
         ui.tooltip(ui.span('Negative share ', question_circle_fill),
-                     'Expected number of non-activated pools',
+                     'Expected share of non-activated pools',
                      placement = 'right',
                      id = 'card_tooltip4_bc'),
         ui.output_text_verbatim('negshare_bc'),
@@ -270,7 +270,7 @@ app_ui = ui.page_navbar(
 
         ## resulting negative share (text)
         ui.tooltip(ui.span('Negative share ', question_circle_fill),
-                     'Expected number of non-activated pools, the value will be displayed after you enter peptides',
+                     'Expected share of non-activated pools, the value will be displayed after you enter peptides',
                      placement = 'right',
                      id = 'card_tooltip6_po'),
         ui.output_text_verbatim('negshare_po', placeholder=True),
@@ -285,7 +285,7 @@ app_ui = ui.page_navbar(
 
         ## button to send generated scheme
         ui.span("   "),
-        ui.input_action_button("send_po", "Send the scheme",
+        ui.input_action_button("send_po", "Send the scheme (beta)",
                                class_="btn-success",
                                style="color: #015396; background-color: #fff; border-color: #015396"),
         
@@ -413,7 +413,7 @@ app_ui = ui.page_navbar(
         ui.input_text("letter_stl", "Enter your email", placeholder="example@mail.ru"),
 
         ## button to send stl files
-        ui.input_action_button("send_stl", "Send results",
+        ui.input_action_button("send_stl", "Send results (beta)",
                                class_="btn-success",
                                style="color: #015396; background-color: #fff; border-color: #015396"),
 
@@ -446,10 +446,10 @@ app_ui = ui.page_navbar(
                 id="card_tooltip2_in",),
         ui.input_file('exp_in', '', multiple=False, accept=".csv"),
 
-        ### button to show example of the experimental read-out
-        ui.input_action_button('exp_example_in', 'Show example read out',
-                               class_="btn",
-                               style="color: #015396; background-color: #fff; border-color: #015396"
+        ### button to load example of the experimental read-out
+        ui.input_action_button('load_sample_in', 'Load example results (press "Analyze" after)',
+                               class_='btn',
+                               style='color: #015396; background-color: #fff; border-color: #015396'
                                ),
         ui.br(),
         ui.br(),
@@ -495,7 +495,7 @@ app_ui = ui.page_navbar(
         ui.input_text("letter_in", "Enter your email ", placeholder="example@mail.ru"),
 
         ## button to send peptide probabilities
-        ui.input_action_button("send_in", "Send results",
+        ui.input_action_button("send_in", "Send results (beta)",
                               class_="btn-success",
                               style="color: #015396; background-color: #fff; border-color: #015396"),
 
@@ -571,7 +571,7 @@ def server(input: Inputs, output: Outputs, session: Session):
     @render.table
     def simulation_example():
         table = pd.read_csv(f'{path_user}www/simulation_example.tsv', sep = "\t")
-        return table
+        return table.sample(5)
     @output
     @render.image
     def peptide_plate_scheme_instr():
@@ -919,6 +919,7 @@ def server(input: Inputs, output: Outputs, session: Session):
                             if len(ep) == ep_length:
                                 act = cpp.pools_activation(pools, ep)
                                 peps, eps = cpp.peptide_search(lst=lst,
+                                                               ep_length = ep_length,
                                                                act_profile=act_profile,
                                                                act_pools = act,
                                                                iters = r,
@@ -1092,11 +1093,12 @@ def server(input: Inputs, output: Outputs, session: Session):
                 if input.well24_stl():
                     coordinates = coordinates + [[input.rows_stl(), input.cols_stl()]]
         
-                name = 'pool' + str(pool_N)
+                name = 'pool' + str(pool_N+1)
+                marks = pool_N + 1 if input.marks_stl() else False
         
                 m = cpp.stl_generator(input.rows_stl(), input.cols_stl(), input.length_stl(), input.width_stl(),
                                       input.thickness_stl(), input.hole_radius_stl(), input.x_offset_stl(),
-                                      input.y_offset_stl(), input.well_spacing_stl(), coordinates, engine = 'manifold', marks = input.marks_stl())
+                                      input.y_offset_stl(), input.well_spacing_stl(), coordinates, engine = 'manifold', marks = marks)
                 
                 meshes_list[name] = m
                 count_stl = count_stl +1
@@ -1129,33 +1131,62 @@ def server(input: Inputs, output: Outputs, session: Session):
 
     message_visible = False
 
+    @output
     @render.data_frame
     def exp_example_out():
-        if input.exp_example_in():  # Detect button clicks
-            nonlocal message_visible
-            message_visible = not message_visible # Toggle state
+        if input.load_sample_in() > 0:
+            return pd.read_csv(f'{path_user}www/cell_f1.csv')
+        
+    @reactive.Effect
+    @reactive.event(input.load_sample_in)
+    def _():
+        ui.update_numeric('npools_in', value=12, session=session)
+        ui.update_numeric('iters_in', value=4, session=session)
 
-        if message_visible:
-            table = pd.read_csv(f'{path_user}www/cell_f1.csv')
-            return table
-        else:
-            return 
+    @reactive.Calc
+    def exp_results_react():
+        file_infos = input.exp_in()
+
+        if file_infos:
+            return pd.read_csv(file_infos[0]['datapath'])
+
+        if input.load_sample_in() > 0:
+            return pd.read_csv(f'{path_user}www/cell_f1.csv')
+
+        return None
+    
+    @reactive.Calc
+    def check_results_react():
+        file_infos = input.check_results_in()
+
+        if file_infos:
+            return pd.read_csv(
+                file_infos[0]["datapath"],
+                sep="\t",
+                dtype={"Address": str, "Act Pools": str}
+            )
+
+        if input.load_sample_in() > 0:
+            return pd.read_csv(
+                f'{path_user}www/simulation_example.tsv',
+                sep="\t",
+                dtype={"Address": str, "Act Pools": str}
+            )
+
+        return None
 
     ## activation model (calculation)
     @reactive.Calc
-    @reactive.event(input.start_model_in, ignore_none = True)
+    @reactive.event(input.start_model_in, ignore_none=True)
     def model_fitting_react():
-        file_infos = input.exp_in()
-        if not file_infos:
-            return
-        for file_info in file_infos:
-            exp_results=pd.read_csv(file_info["datapath"])
 
-        file_infos = input.check_results_in()
-        if not file_infos:
+        exp_results = exp_results_react()
+        if exp_results is None:
             return
-        for file_info in file_infos:
-            check_results=pd.read_csv(file_info["datapath"], sep = "\t")
+
+        check_results = check_results_react()
+        if check_results is None:
+            return
 
         if input.negcontrol_in():
             neg_control = input.negcontrol_in()
@@ -1165,8 +1196,9 @@ def server(input: Inputs, output: Outputs, session: Session):
             neg_control = None
 
         lst = check_results[['Peptide']].drop_duplicates().values.flatten().tolist()
+
         n_pools = input.npools_in()
-        iters  = input.iters_in()
+        iters = input.iters_in()
         ep_length = input.ep_length_in()
 
         with ui.Progress(min=1, max=2) as p:
@@ -1213,14 +1245,13 @@ def server(input: Inputs, output: Outputs, session: Session):
         if not res:
             return
 
-        file_infos = input.check_results_in()
-        if not file_infos:
+        sim = check_results_react()
+        if sim is None:
             return
-        for file_info in file_infos:
-            sim=pd.read_csv(file_info["datapath"], sep = "\t")
 
-        _, probs = model_fitting_react()
+        _, probs = res
         peptide_probs = cpp.peptide_probabilities(sim, probs)
+
         return peptide_probs
     
     ## resulting peptides (calculation)
@@ -1231,17 +1262,22 @@ def server(input: Inputs, output: Outputs, session: Session):
         if not res:
             return
 
-        file_infos = input.check_results_in()
-        if not file_infos:
+        sim = check_results_react()
+        if sim is None:
             return
-        for file_info in file_infos:
-            sim=pd.read_csv(file_info["datapath"], sep = "\t")
 
-        _, probs = model_fitting_react()
+        _, probs = res
         peptide_probs = peptide_probs_react()
 
-        n_act_pools, message, most, possible = cpp.results_analysis(peptide_probs, probs, sim)
-        
+        n_act_pools, message, most, possible = cpp.results_analysis(
+            peptide_probs,
+            probs,
+            sim
+        )
+
+        if isinstance(most, str):
+            most = [most]
+
         return message, most, possible
     
     ## activated pools
@@ -1297,11 +1333,9 @@ def server(input: Inputs, output: Outputs, session: Session):
         if not res:
             return
 
-        file_infos = input.exp_in()
-        if not file_infos:
+        exp_results = exp_results_react()
+        if exp_results is None:
             return
-        for file_info in file_infos:
-            exp_results=pd.read_csv(file_info["datapath"])
         
         cells = list(exp_results['Percentage'])
         inds = list(exp_results['Pool'])

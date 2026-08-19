@@ -1,1 +1,12 @@
+## OS cruft
+.DS_Store
+
+## Python caches
 __pycache__
+
+## Build artifacts
+dist/
+
+
+## IDE
+.idea/
